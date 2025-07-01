@@ -3,17 +3,18 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "start": "dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "NODE_ENV=production dist/index.js",
+    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/app/index.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format": "prettier --write \"src/app/**/*.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^17.0.1",
     "fastify": "^5.4.0",
     "mqtt": "^5.13.1",
     "pusher": "^5.2.0"
