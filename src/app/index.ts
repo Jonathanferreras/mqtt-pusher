@@ -38,6 +38,3 @@ mqttClient.onConnect().then(() => {
     });
   });
 });
-
-// web -> api route /publish -> mqtt-pusher -> hivemq -> iot
-// iot -> hivemq -> mqtt-pusher (subscribed to hivemq) -> pusherjs -> web
