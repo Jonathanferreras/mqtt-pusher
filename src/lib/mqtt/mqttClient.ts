@@ -1,4 +1,5 @@
 import mqtt, { MqttClient, IClientOptions } from 'mqtt';
+import { MqttEvent } from './types/mqtt-event';
 
 let client: MqttClient;
 let onConnect: Promise<void>;
@@ -36,7 +37,7 @@ function publish(topic: string, message: string) {
   }
 }
 
-function subscribe(topic: string, handler: (message: string) => void) {
+function subscribe(topic: string, handler: (message: MqttEvent) => void) {
   if (!client) {
     console.warn('MQTT client not initialized');
     return;
@@ -50,9 +51,10 @@ function subscribe(topic: string, handler: (message: string) => void) {
     }
   });
 
-  client.on('message', (receivedTopic, message) => {
+  client.on('message', (receivedTopic, buffer) => {
     if (receivedTopic === topic) {
-      handler(message.toString());
+      const event: MqttEvent = JSON.parse(buffer.toString());
+      handler(event);
     }
   });
 }

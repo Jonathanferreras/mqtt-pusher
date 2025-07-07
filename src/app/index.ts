@@ -5,6 +5,7 @@ dotenv.config();
 import { fastifyServer } from '../lib/api/server';
 import { mqttClient } from '../lib/mqtt/mqttClient';
 import { pusherClient } from '../lib/pusher/pusherClient';
+import { MqttEvent } from '../lib/mqtt/types/mqtt-event';
 
 fastifyServer.start(
   (process.env.production ? process.env.FASTIFY_PROD_HOST : process.env.FASTIFY_DEV_HOST)!,
@@ -26,15 +27,13 @@ pusherClient.start({
   cluster: process.env.PUSHER_CLUSTER!,
 });
 
-pusherClient.trigger(process.env.PUSHER_CHANNEL!, 'server-connected', {
-  message: 'mqtt-pusher connected!',
-});
+// pusherClient.trigger(process.env.PUSHER_CHANNEL!, 'server-connected', {
+//   message: 'mqtt-pusher connected!',
+// });
 
 mqttClient.onConnect().then(() => {
-  mqttClient.publish(process.env.MQTT_PUB_TOPIC!, 'mqtt-pusher connected!');
-  mqttClient.subscribe(process.env.MQTT_SUB_TOPIC!, (message) => {
-    pusherClient.trigger(process.env.PUSHER_CHANNEL!, 'mqtt-message-incoming', {
-      message,
-    });
+  // mqttClient.publish(process.env.MQTT_PUB_TOPIC!, 'mqtt-pusher connected!');
+  mqttClient.subscribe(process.env.MQTT_SUB_TOPIC!, (event: MqttEvent) => {
+    pusherClient.trigger(process.env.PUSHER_CHANNEL!, 'mqtt-event', event);
   });
 });
